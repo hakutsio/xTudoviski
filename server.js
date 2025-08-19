@@ -8,6 +8,12 @@ const Produto = require('./models/produto');
 const Pedido = require('./models/pedido');
 const Item = require('./models/item');
 
+const cidadesRouter = require('./routes/cidades.routes.js');
+const produtosRouter = require('./routes/produtos.routes.js');
+const clientesRouter = require('./routes/clientes.routes.js');
+const pedidosRouter = require('./routes/pedidos.routes.js');
+const itensRouter = require('./routes/itens.routes.js');
+
 Cliente.belongsTo(Cidade, { foreignKey: 'CodCidade' });
 Cidade.hasMany(Cliente, { foreignKey: 'CodCidade' });
 
@@ -26,9 +32,12 @@ const port = 3001;
 app.use(cors());
 app.use(express.json());
 
-app.get('/api/cidades', async (req, res) => {
-    //...
-});
+app.use('/api/cidades', cidadesRouter);
+app.use('/api/produtos', produtosRouter);
+app.use('/api/clientes', clientesRouter);
+app.use('/api/pedidos', pedidosRouter);
+app.use('/api/itens', itensRouter);
+
 
 sequelize.sync({ force: false }).then(() => {
     app.listen(port, () =>{
