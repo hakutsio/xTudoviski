@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { CssBaseline, Box, Container, Button, ButtonGroup, TextField, Typography } from '@mui/material';
+import { CssBaseline, Box, Container, Button, ButtonGroup, TextField, Typography, Snackbar, Alert } from '@mui/material';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import LastPageIcon from '@mui/icons-material/LastPage';
 
-export default function Cientes() {
+export default function Clientes() {
 
     const [clientes, setClientes] = useState([]);
     const [indiceAtual, setIndiceAtual] = useState(0);
@@ -94,7 +94,7 @@ export default function Cientes() {
     };
 
     const handleAdicionar = () => {
-        setFormCodCliente('');
+        setFormCodCliente('Novo');
         setFormNomCliente('');
         setFormCodEndereco('');
         setFormCodCidade('');
@@ -111,6 +111,41 @@ export default function Cientes() {
 
     const handleCancelar = () => {
         setModo('visualizacao');
+    };
+
+    const handleSalvar = async () => {
+
+        if(!formNomCliente.trim() || !formCodCidade || erroCidade){
+            setNotificacao({
+                open: true,
+                message: 'Nome do cliente e cidade válida são obrigatórios.',
+                severity: 'error'
+            });
+            return;
+        }
+
+        const dadosCliente = {
+            NomCliente: formNomCliente,
+            CodEndereco: formCodEndereco,
+            CodCidade: formCodCidade,
+            Observacao: formObservacao
+        };
+
+        try {
+            if(modo === 'adicao') {
+                await axios.post('http://127.0.0.1:3001/api/clientes', dadosCliente);
+                setNotificacao({ open: true, message: 'Cliente criado com sucesso', severity: 'success' });
+            } else if(modo === 'edicao') {
+                await axios.put(`http://127.0.0.1:3001/api/clientes/${formCodCliente}`, dadosCliente);
+                setNotificacao({ open: true, message: 'Cliente atualizado com sucesso', severity: 'success' });
+            }
+
+            await buscarClientes();
+            setModo('visualizacao');
+        } catch (error) {
+            console.error("Erro ao salvar cliente:", error);
+            setNotificacao({ open: true, message: error.response?.data?.error || 'Ocorreu um erro ao salvar.', severity: 'error' });
+        }
     };
 
     
@@ -132,22 +167,22 @@ export default function Cientes() {
                             <Button onClick={handleUltimo} disabled={indiceAtual >= clientes.length -1}><LastPageIcon/></Button>
                         </ButtonGroup> 
                         <ButtonGroup disabled={modo !== 'visualizacao'} sx={{width: "100%", justifyContent: "center", marginTop: '1rem', marginBottom: '1rem'}}>
-                            <Button>Adicionar</Button>
-                            <Button>Modificar</Button>
+                            <Button onClick={handleAdicionar}>Adicionar</Button>
+                            <Button onClick={handleModificar}>Modificar</Button>
                             <Button>Remover</Button>
                             <Button>Exportar</Button>
                         </ButtonGroup>
                         <ButtonGroup disabled={modo === 'visualizacao'} sx={{width: "100%", justifyContent: "center", marginTop: '0.5rem', marginBottom: '1rem'}}>
-                            <Button>Salvar</Button>
-                            <Button>Cancelar</Button>
+                            <Button onClick={handleSalvar}>Salvar</Button>
+                            <Button onClick={handleCancelar}>Cancelar</Button>
                         </ButtonGroup>
                         <TextField 
                             id="standard-basic" 
                             label="Codigo Cliente" 
                             variant="standard" 
                             size="small" 
-                            disabled
                             value={formCodCliente}
+                            disabled
                             sx={{width: "30%", marginRight: "40%"}}/>
                         <TextField 
                             id="outlined-basic" 
@@ -198,6 +233,11 @@ export default function Cientes() {
                     </Box>
                 </Container>
             </CssBaseline>
+            <Snackbar open={notificacao.open} autoHideDuration={6000} onClose={() => setNotificacao({ ...notificacao, open: false})}>
+                <Alert onClose={() => setNotificacao({ ...notificacao, open: false})} severity={notificacao.severity} sx={{ width: '100%' }}>
+                    {notificacao.message}
+                </Alert>
+            </Snackbar>
         </React.Fragment>
     );
 }

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Cliente = require('../models/cliente');
+const Cidade = require('../models/cidade');
 
 router.get('/', async(req, res) => {
     try {
@@ -8,6 +9,23 @@ router.get('/', async(req, res) => {
         res.json(clientes);
     } catch (erro){
         res.status(500).json({ error: 'Erro ao buscar cliente' });
+    }
+});
+
+router.get('/:id', async (req, res) => {
+    try {
+        const cliente = await Cliente.findByPk(req.params.id, {
+            include: [Cidade]
+        });
+
+        if(cliente){
+            res.json(cliente);
+        } else {
+            res.status(404).json({ error: 'Cliente não encontrado' });
+        }
+    } catch (error) {
+        console.error('Erro ao buscar Cliente:', error);
+        res.status(500).json({ error: 'Erro ao buscar um cliente' });
     }
 });
 

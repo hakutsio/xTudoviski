@@ -64,7 +64,7 @@ export default function Produto() {
 
 
     const handleAdicionar = () => {
-        setFormCodProduto('');
+        setFormCodProduto('Novo');
         setFormNomProduto('');
         setFormValProduto('');
         setModo('adicao');
@@ -96,8 +96,10 @@ export default function Produto() {
         try {
             if(modo ==='adicao') {
                 await axios.post('http://127.0.0.1:3001/api/produtos', dadosProduto);
+                setNotificacao({ open: true, message: 'Produto criado com sucesso!', severity: 'sucess' });
             } else if (modo === 'edicao'){
                 await axios.put(`http://127.0.0.1:3001/api/produtos/${formCodProduto}`, dadosProduto);
+                setNotificacao({ open: true, message: 'Produto Atualizado com sucesso!', sevetity: 'sucess' });
             }
 
 

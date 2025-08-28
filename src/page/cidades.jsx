@@ -64,7 +64,7 @@ export default function Cidades() {
 
 
     const handleAdicionar = () => {
-        setFormCodCidade('');
+        setFormCodCidade('Novo');
         setFormCodUF('');
         setFormNomCidade('');
 

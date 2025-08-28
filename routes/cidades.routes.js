@@ -17,6 +17,19 @@ router.get('/', async(req, res) => {
     }
 });
 
+router.get('/:id', async(req, res) => {
+    try {
+        const cidade = await Cidade.findByPk(req.params.id);
+        if(cidade) {
+            res.json(cidade);
+        } else {
+            res.status(404).json({ error: 'Cidade não encontrada' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao buscar cidade' });
+    }
+});
+
 router.post('/', async(req, res) => {
     try {
         const { NomCidade, CodUF } = req.body;

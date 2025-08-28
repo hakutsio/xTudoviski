@@ -5,7 +5,7 @@
 Um sistema de gerenciamento para uma hamburgueria, desenvolvido como projeto de estudo para aplicar conceitos de desenvolvimento front-end com React.   
 O sistema permite o controle de cadastros essenciais como clientes, produtos e cidades, além da gestão completa de pedidos e seus itens.                           
 
-> **Status:** Em Desenvolvimento 🚧
+> **Status:** Em Desenvolvimento 64% 🚧
 
 ---
 

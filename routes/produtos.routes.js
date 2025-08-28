@@ -11,6 +11,20 @@ router.get('/', async(req, res) => {
     }
 });
 
+router.get('/:id', async (req, res) => {
+  try {
+    const produto = await Produto.findByPk(req.params.id);
+
+    if (produto) {
+      res.json(produto);
+    } else {
+      res.status(404).json({ error: 'Produto não encontrado' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao buscar produto' });
+  }
+});
+
 router.post('/', async(req, res) => {
     try {
         const novoProduto = await Produto.create(req.body);
